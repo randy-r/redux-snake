@@ -38,22 +38,22 @@ const reduxDevTools = process.env.NODE_ENV === 'production' ?
 class ReduxSnake extends React.Component {
   constructor(props) {
     super(props);
-    this.setupStore();
+    this.setupStore(props);
   }
   componentDidMount() {
     startGameLoop(this.store);
   }
-  componentWillReceiveProps(/* nextProps */) {
-    this.setupStore();
+  componentWillReceiveProps(nextProps) {
+    this.setupStore(nextProps);
   }
   componentWillUnmount() {
     stopGameLoop();
   }
-  setupStore = () => {
+  setupStore = (props) => {
     // defaultProps are called before initialiation of component
     // so putting a store there will break Redux Dev Tools
     this.store =
-      this.props.store ||
+      props.store ||
       createStore(snakeReducer, reduxDevTools);
   }
 
