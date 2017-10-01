@@ -27,5 +27,7 @@ export const stopGameLoop = () => {
   if (stId) {
     clearTimeout(stId);
   }
-  unsubscribe();
+  if (unsubscribe) {
+    unsubscribe();
+  }
 };
