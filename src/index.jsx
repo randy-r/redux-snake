@@ -23,7 +23,7 @@ const mapDispatchToProps = (dispatch) => {
 
 
 const ReduxSnakeConnected = connect(
-  mapStateToProps,
+  undefined,
   mapDispatchToProps,
 )(RS);
 
