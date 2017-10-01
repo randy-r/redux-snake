@@ -1,14 +1,15 @@
 import React from 'react';
 import { Provider, connect } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, combineReducers } from 'redux';
+import { storeShape } from 'react-redux/lib/utils/PropTypes';
 
 import RS from './components/ReduxSnake';
-import { root as rootReducer } from './redux-stuff/reducers';
+import { root as snakeReducer } from './redux-stuff/reducers';
 import { changeText } from './redux-stuff/action-creators';
 
 const mapStateToProps = (state) => {
   return {
-    text: state.text,
+    text: state.snake.text,
   }
 }
 
@@ -28,14 +29,17 @@ const ReduxSnakeConnected = connect(
 
 const reduxDevTools = process.env.NODE_ENV === 'production' ?
   undefined :
-   /* eslint-disable no-underscore-dangle */
+  /* eslint-disable no-underscore-dangle */
   (window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
-  /* eslint-enable */
+/* eslint-enable */
+
 
 const ReduxSnake = ({ store }) => {
+  // defaultProps are called before initialiation of component
+  // so putting a store there will break Redux Dev Tools
   const getStore = () =>
     store ||
-    createStore(rootReducer, reduxDevTools);
+    createStore(snakeReducer, reduxDevTools);
 
   return (
     <Provider store={getStore()} >
@@ -44,4 +48,12 @@ const ReduxSnake = ({ store }) => {
   );
 };
 
-export default ReduxSnake;
+// ReduxSnake.defaultProps = {
+//   store: createStore(combineReducers({ snake: snakeReducer }), reduxDevTools),
+// };
+
+ReduxSnake.propTypes = {
+  store: storeShape,
+};
+
+export { ReduxSnake, snakeReducer };
