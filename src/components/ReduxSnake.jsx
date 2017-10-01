@@ -1,10 +1,21 @@
 import React from 'react';
 
-export default class ReduxSnake extends React.Component {
 
-  getText = () => ('---redux---snake---')
+class ReduxSnake extends React.Component {
+
+  constructor(props) {
+    super(props);
+    setInterval(() => {
+      props.doChange();
+    }, 800);
+  }
 
   render() {
-    return <div>{this.getText()}</div>;
+    return (
+      <div>{this.props.text}</div>
+    );
   }
 }
+
+export default ReduxSnake;
+
