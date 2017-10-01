@@ -1,11 +1,12 @@
 import React from 'react';
 import { Provider, connect } from 'react-redux';
-import { createStore, combineReducers } from 'redux';
+import { createStore } from 'redux';
 import { storeShape } from 'react-redux/lib/utils/PropTypes';
 
 import RS from './components/ReduxSnake';
 import { root as snakeReducer } from './redux-stuff/reducers';
 import { changeText } from './redux-stuff/action-creators';
+import { startGameLoop, stopGameLoop } from './game-loop';
 
 const mapStateToProps = (state) => {
   return {
@@ -34,19 +35,36 @@ const reduxDevTools = process.env.NODE_ENV === 'production' ?
 /* eslint-enable */
 
 
-const ReduxSnake = ({ store }) => {
-  // defaultProps are called before initialiation of component
-  // so putting a store there will break Redux Dev Tools
-  const getStore = () =>
-    store ||
-    createStore(snakeReducer, reduxDevTools);
+class ReduxSnake extends React.Component {
+  constructor(props) {
+    super(props);
+    this.setupStore();
+  }
+  componentDidMount() {
+    startGameLoop(this.store);
+  }
+  componentWillReceiveProps(/* nextProps */) {
+    this.setupStore();
+  }
+  componentWillUnmount() {
+    stopGameLoop();
+  }
+  setupStore = () => {
+    // defaultProps are called before initialiation of component
+    // so putting a store there will break Redux Dev Tools
+    this.store =
+      this.props.store ||
+      createStore(snakeReducer, reduxDevTools);
+  }
 
-  return (
-    <Provider store={getStore()} >
-      <ReduxSnakeConnected />
-    </Provider >
-  );
-};
+  render() {
+    return (
+      <Provider store={this.store} >
+        <ReduxSnakeConnected />
+      </Provider >
+    );
+  }
+}
 
 // ReduxSnake.defaultProps = {
 //   store: createStore(combineReducers({ snake: snakeReducer }), reduxDevTools),

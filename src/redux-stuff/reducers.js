@@ -1,10 +1,26 @@
-import { CHANGE_TEXT } from './action-types';
+import { CHANGE_TEXT, UPDATE_LOOP } from './action-types';
 
-export const root = (state = { text: 'Initial text' }, action) => {
+const loop = (state = 0, action) => {
   switch (action.type) {
-    case CHANGE_TEXT:
-      return Object.assign({}, state, { text: action.value });
+    case UPDATE_LOOP:
+      return action.iteration;
     default:
       return state;
   }
+};
+
+const changeText = (state = 'Initial text', action) => {
+  switch (action.type) {
+    case CHANGE_TEXT:
+      return action.value;
+    default:
+      return state;
+  }
+};
+
+export const root = (state = {}, action) => {
+  const text = changeText(state.text, action);
+  const iteration = loop(state.iteration, action);
+  const stateModified = Object.assign(state, { text, iteration });
+  return stateModified;
 };
