@@ -1,9 +1,11 @@
 import React from 'react';
+import { registerDirection } from '../game-loop';
+import { UP, RIGHT, DOWN, LEFT } from '../directions';
 // import styles from './styles.css';
 
 const gridSize = 7;
 const ARROWUP = 'ArrowUp';
-const ARROWDOWN  = 'ArrowDown';
+const ARROWDOWN = 'ArrowDown';
 const ARROWLEFT = 'ArrowLeft';
 const ARROWRIGHT = 'ArrowRight';
 
@@ -43,7 +45,24 @@ class ReduxSnake extends React.Component {
   }
 
   handleKeyDown = (event) => {
-    
+    let direction;
+    switch (event.key) {
+      case ARROWUP:
+        direction = UP;
+        break;
+      case ARROWRIGHT:
+        direction = RIGHT;
+        break;
+      case ARROWDOWN:
+        direction = DOWN;
+        break;
+      case ARROWLEFT:
+        direction = LEFT;
+        break;
+      default:
+        break;
+    }
+    registerDirection(direction);
   }
 
   buildGrid = (size, onKeyDown) => {
