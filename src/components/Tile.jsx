@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { SNAKE, BAIT, NORMAL } from '../tile-types';
+
 const gridSize = 7;
 
 const commonStyle = {
@@ -19,17 +21,22 @@ const commonStyle = {
 const styles = {
   normalTile: Object.assign({}, commonStyle, { background: 'darkblue' }),
   snakeTile: Object.assign({}, commonStyle, { background: 'green' }),
+  baitTile: Object.assign({}, commonStyle, { background: 'red' }),
 };
 
-const Tile = ({isSnakeTile}) => {
-  const style = isSnakeTile ? styles.snakeTile : styles.normalTile;
-  return <div style={style} />;
+const tileMap = new Map();
+tileMap.set(NORMAL, <div style={styles.normalTile} />);
+tileMap.set(SNAKE, <div style={styles.snakeTile} />);
+tileMap.set(BAIT, <div style={styles.baitTile} />);
+
+const Tile = ({ tileType }) => {
+  return tileMap.get(tileType);
 };
 
 const ConnectedTile = connect(
   (state, ownProps) => {
     return {
-      isSnakeTile: state.snake.tiles[ownProps.x][ownProps.y],
+      tileType: state.snake.tiles[ownProps.x][ownProps.y],
     };
   },
 )(Tile);

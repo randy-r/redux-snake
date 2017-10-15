@@ -1,5 +1,7 @@
 import React from 'react';
-import { register as registerDirection } from '../game-loop';
+import { connect } from 'react-redux';
+
+import { register as registerDirection, restart as restartGame } from '../game-loop';
 import { UP, RIGHT, DOWN, LEFT } from '../directions';
 import Tile from './Tile';
 // import styles from './styles.css';
@@ -15,12 +17,36 @@ const styles = {
   wrap: {
     width: '80%',
     margin: '0 auto',
+    position: 'relative',
   },
   br: {
     clear: 'both',
   },
+  gameOver: {
+    opacity: 0.5,
+    background: 'yellow',
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    top: 0,
+  },
 };
 
+const GameOverScreen = connect(
+  (state) => {
+    return { show: state.snake.gameOver };
+  },
+)(
+  ({ show }) => {
+    if (!show) {
+      return <div style={{ display: 'none' }} />;
+    }
+    return (
+      <div style={styles.gameOver} >
+        <button onClick={(/* event */) => restartGame()} >Restart</button>
+      </div>
+    );
+  });
 
 
 class ReduxSnake extends React.Component {
@@ -66,16 +92,24 @@ class ReduxSnake extends React.Component {
     }
 
     return (
-      <div role="grid" tabIndex="0" onKeyDown={onKeyDown} style={styles.wrap} >
+      <div role="grid" tabIndex="0" onKeyDown={onKeyDown} >
         {rows}
       </div >
     );
   }
 
   render() {
-    return this.buildGrid(gridSize, this.handleKeyDown);
+    if (this.props.gameOver) {
+      console.log('Game Over!');
+      return null;
+    }
+    return (
+      <div style={styles.wrap} >
+        {this.buildGrid(gridSize, this.handleKeyDown)}
+        <GameOverScreen />
+      </div>
+    );
   }
 }
 
 export default ReduxSnake;
-
