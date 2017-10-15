@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { interpolateCool } from 'd3-scale';
 
 import { SNAKE, BAIT, NORMAL } from '../tile-types';
 
@@ -29,15 +30,23 @@ tileMap.set(NORMAL, <div style={styles.normalTile} />);
 tileMap.set(SNAKE, <div style={styles.snakeTile} />);
 tileMap.set(BAIT, <div style={styles.baitTile} />);
 
-const Tile = ({ tileType }) => {
-  return tileMap.get(tileType);
+const Tile = ({ color }) => {
+  return <div style={Object.assign({}, commonStyle, { background: color })} />;
 };
 
 const ConnectedTile = connect(
   (state, ownProps) => {
-    return {
-      tileType: state.snake.tiles[ownProps.x][ownProps.y],
-    };
+    const { tileIndicesInBody, tiles } = state.snake;
+    const { x, y } = ownProps;
+    let color = 'darkblue'; // color for NORMAL
+    const tileType = tiles[x][y];
+    if (tileType === SNAKE) {
+      const index = tileIndicesInBody[x][y];
+      color = interpolateCool(index / (gridSize * gridSize));
+    } else if (tileType === BAIT) {
+      color = 'red';
+    }
+    return { color };
   },
 )(Tile);
 
