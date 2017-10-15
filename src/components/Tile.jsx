@@ -13,14 +13,14 @@ const commonStyle = {
   MozBoxSizing: 'border-box',
   WebkitBoxSizing: 'border-box',
   // margin: '1%',
-  borderStyle: 'solid',
-  borderColor: '#ff0000',
+  // borderStyle: 'solid',
+  // borderColor: '#black',
   float: 'left',
   // borderWidth: '10px',
 };
 
 const styles = {
-  normalTile: Object.assign({}, commonStyle, { background: 'darkblue' }),
+  normalTile: Object.assign({}, commonStyle, { background: 'black' }),
   snakeTile: Object.assign({}, commonStyle, { background: 'green' }),
   baitTile: Object.assign({}, commonStyle, { background: 'red' }),
 };
@@ -30,23 +30,40 @@ tileMap.set(NORMAL, <div style={styles.normalTile} />);
 tileMap.set(SNAKE, <div style={styles.snakeTile} />);
 tileMap.set(BAIT, <div style={styles.baitTile} />);
 
-const Tile = ({ color }) => {
-  return <div style={Object.assign({}, commonStyle, { background: color })} />;
+const Tile = ({ color, boxShadow, zIndex }) => {
+  const style = Object.assign({}, commonStyle,
+    {
+      background: color,
+      boxShadow,
+      zIndex,
+      position: 'relative',
+    });
+  return <div style={{ position: 'relative' }}> <div style={style} /> </div>;
 };
 
 const ConnectedTile = connect(
   (state, ownProps) => {
-    const { tileIndicesInBody, tiles } = state.snake;
+    const { tileIndicesInBody, tiles, body } = state.snake;
     const { x, y } = ownProps;
-    let color = 'darkblue'; // color for NORMAL
+    let color = 'black'; // color for NORMAL
+    let boxShadow;
     const tileType = tiles[x][y];
+    let zIndex = 0;
     if (tileType === SNAKE) {
-      const index = tileIndicesInBody[x][y];
-      color = interpolateCool(index / (gridSize * gridSize));
+      const index = body.length - 1 - tileIndicesInBody[x][y];
+      color = '#ffffff';
+      const shadowColor = interpolateCool(index / (gridSize * gridSize));
+      // box-shadow: rgb(0, 0, 0) 0 0 20px 12px inset, rgb(255, 0, 70) 0 0 20px 17px inset;
+      boxShadow = `
+          0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff,
+          0 0 40px ${shadowColor}, 0 0 70px ${shadowColor}, 0 0 80px ${shadowColor},
+           0 0 100px ${shadowColor}, 0 0 150px ${shadowColor}
+          `;
+      zIndex = body.length - index + 10;
     } else if (tileType === BAIT) {
       color = 'red';
     }
-    return { color };
+    return { color, boxShadow, zIndex };
   },
 )(Tile);
 
