@@ -9,14 +9,15 @@ const gridSize = 7;
 const commonStyle = {
   width: `${100 / gridSize}%`,
   paddingBottom: `${100 / gridSize}%`,
-  boxBizing: 'border-box',
-  MozBoxSizing: 'border-box',
-  WebkitBoxSizing: 'border-box',
+  // boxBizing: 'border-box',
+  // MozBoxSizing: 'border-box',
+  // WebkitBoxSizing: 'border-box',
   // margin: '1%',
   // borderStyle: 'solid',
   // borderColor: '#black',
   float: 'left',
   // borderWidth: '10px',
+  position: 'relative',
 };
 
 const styles = {
@@ -31,14 +32,34 @@ tileMap.set(SNAKE, <div style={styles.snakeTile} />);
 tileMap.set(BAIT, <div style={styles.baitTile} />);
 
 const Tile = ({ color, boxShadow, zIndex }) => {
-  const style = Object.assign({}, commonStyle,
-    {
-      background: color,
-      boxShadow,
-      zIndex,
-      position: 'relative',
-    });
-  return <div style={{ position: 'relative' }}> <div style={style} /> </div>;
+  // const style = Object.assign({}, commonStyle,
+  //   {
+  //     // background: color,
+  //     boxShadow,
+  //     zIndex,
+  //     // position: 'relative',
+  //   });
+
+  const innerStyle = {
+    position: 'absolute',
+    paddingBottom: '100%',
+    width: '100%',
+    boxShadow,
+    zIndex,
+  };
+  const innerStyle2 = {
+    position: 'absolute',
+    paddingBottom: '100%',
+    width: '100%',
+    background: color,
+    zIndex: zIndex * 2,
+  };
+  return (
+    <div style={commonStyle} >
+      <div style={innerStyle} />
+      <div style={innerStyle2} />
+    </div>
+  );
 };
 
 const ConnectedTile = connect(
@@ -51,8 +72,8 @@ const ConnectedTile = connect(
     let zIndex = 0;
     if (tileType === SNAKE) {
       const index = body.length - 1 - tileIndicesInBody[x][y];
-      color = '#ffffff';
       const shadowColor = interpolateCool(index / (gridSize * gridSize));
+      color = '#ffffff';
       // box-shadow: rgb(0, 0, 0) 0 0 20px 12px inset, rgb(255, 0, 70) 0 0 20px 17px inset;
       boxShadow = `
           0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff,
