@@ -17,4 +17,13 @@ const appStore = createStore(
   (window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()),
 );
 
-ReactDOM.render(<ReduxSnake store={appStore} />, document.getElementById('root'));
+ReactDOM.render((
+  <div style={{
+    width: '70%',
+    margin: '0 auto',
+  }}
+  >
+    <ReduxSnake store={appStore} />
+  </div >),
+  document.getElementById('root'),
+);

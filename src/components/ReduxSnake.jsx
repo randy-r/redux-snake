@@ -15,21 +15,48 @@ const ARROWRIGHT = 'ArrowRight';
 
 const styles = {
   wrap: {
-    width: '80%',
-    margin: '0 auto',
+    width: '100%',
     position: 'relative',
+    overflow: 'hidden',
   },
   br: {
     clear: 'both',
   },
   gameOver: {
-    opacity: 0.5,
-    background: 'yellow',
+    opacity: 0.8,
+    background: '#000',
     width: '100%',
     height: '100%',
     position: 'absolute',
     top: 0,
+    zIndex: gridSize * gridSize,
   },
+  replayPanel: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    top: 0,
+    zIndex: (gridSize * gridSize) + 1,
+  },
+  verticalCenter: {
+    position: 'relative',
+    top: '32%',
+  },
+  horizontalCenter: {
+    margin: '0 auto',
+    width: '10%',
+  },
+};
+
+const Replay = ({ onClick }) => {
+  const shadowColor = '#00ff00';
+  const textShadow = `
+          0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff,
+          0 0 40px ${shadowColor}, 0 0 70px ${shadowColor}, 0 0 80px ${shadowColor},
+           0 0 100px ${shadowColor}, 0 0 150px ${shadowColor}
+          `;
+  const style = { textShadow, fontSize: '17vw', color: '#fff', cursor: 'pointer' };
+  return <span style={style} role="button" tabIndex="-1" onClick={onClick}>&#x25B7;</span>;
 };
 
 const GameOverScreen = connect(
@@ -42,9 +69,17 @@ const GameOverScreen = connect(
       return <div style={{ display: 'none' }} />;
     }
     return (
-      <div style={styles.gameOver} >
-        <button onClick={(/* event */) => restartGame()} >Restart</button>
-      </div>
+      <div>
+        <div style={styles.gameOver} />
+        <div style={styles.replayPanel}>
+          <div style={styles.verticalCenter} >
+            <div style={styles.horizontalCenter} >
+              <Replay onClick={(/* event */) => restartGame()} />
+            </div>
+          </div>
+        </div >
+      </div >
+
     );
   });
 

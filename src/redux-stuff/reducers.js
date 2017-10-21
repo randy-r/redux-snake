@@ -27,6 +27,17 @@ const getRandomBaitTile = (tiles) => {
   return available[getRandomInt(0, available.length)];
 };
 
+const getTileIndicesInBody = (body) => {
+  const tileIndicesInBody = {};
+  for (let i = 0; i < body.length; i += 1) {
+    const bodyTile = body[i];
+    const innerObj = tileIndicesInBody[bodyTile.x] || {};
+    innerObj[bodyTile.y] = i;
+    tileIndicesInBody[bodyTile.x] = innerObj;
+  }
+  return tileIndicesInBody;
+};
+
 const initState = () => {
   const iteration = 0;
   const tiles = [...new Array(GRID_SIZE).keys()]
@@ -34,18 +45,21 @@ const initState = () => {
       .map(() => NORMAL));
 
   const y = 1;
-  const body = [{ x: 0, y }, { x: 1, y }, { x: 2, y }, { x: 3, y }];
+  const body = [{ x: 0, y }, { x: 1, y }, { x: 2, y }, { x: 3, y }]; // from tail to head
 
   for (let i = 0; i < body.length; i += 1) {
     const bodyTile = body[i];
     tiles[bodyTile.x][bodyTile.y] = SNAKE;
   }
 
+  const tileIndicesInBody = getTileIndicesInBody(body);
+
   const bait = { x: 3, y: 3 };
   tiles[bait.x][bait.y] = BAIT;
 
   const gameOver = false;
-  return { iteration, tiles, body, bait, gameOver };
+
+  return { iteration, tiles, body, bait, gameOver, tileIndicesInBody };
 };
 
 export const root = (state = initState(), action) => {
@@ -117,5 +131,7 @@ export const root = (state = initState(), action) => {
 
   const iteration = state.iteration + 1;
 
-  return Object.assign({}, state, { iteration, tiles, body, bait });
+  const tileIndicesInBody = getTileIndicesInBody(body);
+
+  return Object.assign({}, state, { iteration, tiles, body, bait, tileIndicesInBody });
 };
