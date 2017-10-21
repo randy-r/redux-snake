@@ -5,7 +5,7 @@ import { storeShape } from 'react-redux/lib/utils/PropTypes';
 
 import RS from './components/ReduxSnake';
 import { root as snakeReducer } from './redux-stuff/reducers';
-import { start as startGameLoop, stop as stopGameLoop } from './game-loop';
+import { registerStore, stop as stopGameLoop } from './game-loop';
 
 
 const reduxDevTools = process.env.NODE_ENV === 'production' ?
@@ -21,22 +21,26 @@ class ReduxSnake extends React.Component {
     this.setupStore(props);
   }
   componentDidMount() {
-    startGameLoop(this.store);
+    registerStore(this.store);
   }
   componentWillReceiveProps(nextProps) {
     this.setupStore(nextProps);
+  }
+  componentDidUpdate() {
+    // TODO : start the game here also
   }
   componentWillUnmount() {
     stopGameLoop();
   }
   setupStore = (props) => {
+    // TODO : stop gameloop when passed in a new store
+
     // defaultProps are called before initialiation of component
     // so putting a store there will break Redux Dev Tools
     this.store =
       props.store ||
       createStore(snakeReducer, reduxDevTools);
   }
-
   render() {
     return (
       <Provider store={this.store} >

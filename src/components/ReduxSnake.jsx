@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { register as registerDirection, restart as restartGame } from '../game-loop';
+import { setDirection, start as startGame, pause as pauseGame, resume as resumeGame } from '../game-loop';
 import { UP, RIGHT, DOWN, LEFT } from '../directions';
 import Tile from './Tile';
 // import styles from './styles.css';
@@ -22,7 +22,7 @@ const styles = {
   br: {
     clear: 'both',
   },
-  gameOver: {
+  startPanel: {
     opacity: 0.8,
     background: '#000',
     width: '100%',
@@ -48,7 +48,7 @@ const styles = {
   },
 };
 
-const Replay = ({ onClick }) => {
+const PlayButton = ({ onClick }) => {
   const shadowColor = '#00ff00';
   const textShadow = `
           0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff,
@@ -59,22 +59,22 @@ const Replay = ({ onClick }) => {
   return <span style={style} role="button" tabIndex="-1" onClick={onClick}>&#x25B7;</span>;
 };
 
-const GameOverScreen = connect(
+const StartPanel = connect(
   (state) => {
-    return { show: state.snake.gameOver };
+    return { show: state.snake.showStartPanel };
   },
 )(
-  ({ show }) => {
+  ({ show, onClick }) => {
     if (!show) {
       return <div style={{ display: 'none' }} />;
     }
     return (
       <div>
-        <div style={styles.gameOver} />
+        <div style={styles.startPanel} />
         <div style={styles.replayPanel}>
           <div style={styles.verticalCenter} >
             <div style={styles.horizontalCenter} >
-              <Replay onClick={(/* event */) => restartGame()} />
+              <PlayButton onClick={onClick} />
             </div>
           </div>
         </div >
@@ -88,9 +88,6 @@ class ReduxSnake extends React.Component {
 
   constructor(props) {
     super(props);
-    // setInterval(() => {
-    //   props.doChange();
-    // }, 800);
   }
 
   handleKeyDown = (event) => {
@@ -111,7 +108,7 @@ class ReduxSnake extends React.Component {
       default:
         break;
     }
-    registerDirection(direction);
+    setDirection(direction);
   }
 
   buildGrid = (size, onKeyDown) => {
@@ -127,21 +124,22 @@ class ReduxSnake extends React.Component {
     }
 
     return (
-      <div role="grid" tabIndex="0" onKeyDown={onKeyDown} >
+      <div
+        onFocus={() => resumeGame()}
+        onBlur={() => pauseGame()}
+        ref={(el) => { this.gridRef = el; }}
+        role="grid" tabIndex="0" onKeyDown={onKeyDown}
+      >
         {rows}
       </div >
     );
   }
 
   render() {
-    if (this.props.gameOver) {
-      console.log('Game Over!');
-      return null;
-    }
     return (
       <div style={styles.wrap} >
         {this.buildGrid(gridSize, this.handleKeyDown)}
-        <GameOverScreen />
+        <StartPanel onClick={(/* event */) => { startGame(); this.gridRef.focus(); }} />
       </div>
     );
   }

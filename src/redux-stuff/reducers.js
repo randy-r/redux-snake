@@ -1,4 +1,4 @@
-import { RESTART } from './action-types';
+import { START } from './action-types';
 import { UP, RIGHT, DOWN, LEFT } from '../directions';
 import { SNAKE, BAIT, NORMAL } from '../tile-types';
 
@@ -57,14 +57,16 @@ const initState = () => {
   const bait = { x: 3, y: 3 };
   tiles[bait.x][bait.y] = BAIT;
 
-  const gameOver = false;
+  const showStartPanel = true;
 
-  return { iteration, tiles, body, bait, gameOver, tileIndicesInBody };
+  return { iteration, tiles, body, bait, showStartPanel, tileIndicesInBody };
 };
 
 export const root = (state = initState(), action) => {
-  if (action.type === RESTART) {
-    return initState();
+  if (action.type === START) {
+    const newGameState = initState();
+    newGameState.showStartPanel = false;
+    return newGameState;
   }
   // Common logic for UP, RIGHT, DOWN, LEFT is extracted outside the switch statement,
   // so better return now if action type is other than these four
@@ -109,7 +111,7 @@ export const root = (state = initState(), action) => {
 
   // collision detection
   if (body.find(p => p.x === head.x && p.y === head.y)) {
-    return Object.assign({}, state, { gameOver: true });
+    return Object.assign({}, state, { showStartPanel: true });
   }
   body.push(head);
 
