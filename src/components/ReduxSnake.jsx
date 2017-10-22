@@ -56,7 +56,8 @@ const PlayButton = ({ onClick }) => {
            0 0 100px ${shadowColor}, 0 0 150px ${shadowColor}
           `;
   const style = { textShadow, fontSize: '17vw', color: '#fff', cursor: 'pointer' };
-  return <span style={style} role="button" tabIndex="-1" onClick={onClick}>&#x25B7;</span>;
+  const unicodeString = String.fromCodePoint(0x25B7); // keeps minification from messing things up
+  return <span style={style} role="button" tabIndex="-1" onClick={onClick}>{unicodeString}</span>;
 };
 
 const StartPanel = connect(

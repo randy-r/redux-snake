@@ -6,8 +6,8 @@
   "scripts": {
     "buildPackage": "rimraf dist && babel src --out-dir dist",
     "bundleDev": "webpack --config webpack.config.dev.js",
-    "bundleProd": "webpack --config webpack.config.prod.js && webpack --env.uglify --config webpack.config.prod.js",
-    "buildAll": "npm run buildPackage && npm run bundleDev && npm run bundleProd",
+    "bundleUmd": "webpack --config webpack.config.umd.js && webpack --env.uglify --config webpack.config.umd.js",
+    "buildAll": "npm run buildPackage && npm run bundleDev && npm run bundleUmd",
     "startDev": "webpack-dev-server --config webpack.config.dev.js --env.sourceMaps",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

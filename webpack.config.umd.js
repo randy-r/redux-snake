@@ -21,10 +21,15 @@ module.exports = (env) => {
 
   return merge(baseConfig, {
     entry: './src/index.jsx',
+    externals: {
+      react: 'React',
+    },
     output: {
-      path: path.resolve('bundle'),
+      path: path.resolve('umd'),
+      library: 'reduxsnake',
+      libraryTarget: 'umd',
       filename: uglify ? 'redux-snake.min.js' : 'redux-snake.js',
     },
-    plugins: plugins,
+    plugins,
   });
 };
