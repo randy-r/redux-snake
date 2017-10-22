@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { combineReducers, createStore } from 'redux';
+import { Provider } from 'react-redux';
 
 import { ReduxSnake, snakeReducer } from '../src/index';
 
@@ -25,7 +26,9 @@ ReactDOM.render((
     margin: '0 auto',
   }}
   >
-    <ReduxSnake store={appStore} />
+    <Provider store={appStore} >
+      <ReduxSnake />
+    </Provider >
   </div >),
   document.getElementById('root'),
 );

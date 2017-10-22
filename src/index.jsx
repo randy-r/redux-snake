@@ -32,24 +32,22 @@ const validateStore = (store) => {
 const onlySnakeReducer = combineReducers({ snake: snakeReducer });
 
 class ReduxSnake extends React.Component {
-  constructor(props) {
-    super(props);
-    this.setupStore(props);
+  constructor(props, context) {
+    super(props, context);
+    this.setupStore(context);
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setupStore(nextProps);
+  componentWillReceiveProps(nextProps, nextContext) {
+    this.setupStore(nextContext);
   }
 
   componentWillUnmount() {
     stopGameLoop();
   }
 
-  setupStore = (props) => {
+  setupStore = (context) => {
     stopGameLoop();
-    // DefaultProps are called before initialiation of component
-    // so putting a store there will break Redux Dev Tools.
-    const { store } = props;
+    const { store } = context;
     this.store = undefined;
     if (store && validateStore(store)) {
       this.store = store;
@@ -60,6 +58,10 @@ class ReduxSnake extends React.Component {
   }
 
   render() {
+    if (this.context.store) {
+      // there is already a Provider in the hierarchy
+      return <RS />;
+    }
     return (
       <Provider store={this.store} >
         <RS />
@@ -68,14 +70,8 @@ class ReduxSnake extends React.Component {
   }
 }
 
-// Keep this comment as an anti-example for this particular case.
-// ReduxSnake.defaultProps = {
-//   store: createStore(combineReducers({ snake: snakeReducer }), reduxDevTools),
-// };
-ReduxSnake.propTypes = {
-  /* eslint-disable react/require-default-props */
+ReduxSnake.contextTypes = {
   store: storeShape,
-  /* eslint-enable */
 };
 
 export { ReduxSnake, snakeReducer };
