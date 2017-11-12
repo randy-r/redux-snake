@@ -3,8 +3,6 @@
 
 ReduxSnake is a react component that renders a playable snake game. The project was intended as a fun Redux utilisation.
 
-## Play it [here](https://randy-r.github.io/sierpinski.html)!
-
 
 
 ## Usage
