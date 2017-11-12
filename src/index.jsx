@@ -5,7 +5,7 @@ import { storeShape } from 'react-redux/lib/utils/PropTypes';
 
 import RS from './components/ReduxSnake';
 import { root as snakeReducer } from './redux-stuff/reducers';
-import { registerStore, stop as stopGameLoop } from './game-loop';
+import { GameLoopProvider, GameLoop } from './components/GameLoop';
 
 
 const reduxDevTools = process.env.NODE_ENV === 'production' ?
@@ -31,6 +31,7 @@ const validateStore = (store) => {
 // state has to have the snake slice/property
 const onlySnakeReducer = combineReducers({ snake: snakeReducer });
 
+
 class ReduxSnake extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -41,30 +42,28 @@ class ReduxSnake extends React.Component {
     this.setupStore(nextContext);
   }
 
-  componentWillUnmount() {
-    stopGameLoop();
-  }
-
   setupStore = (context) => {
-    stopGameLoop();
     const { store } = context;
-    this.store = undefined;
     if (store && validateStore(store)) {
       this.store = store;
     } else {
       this.store = createStore(onlySnakeReducer, reduxDevTools);
     }
-    registerStore(this.store);
   }
 
   render() {
+    const game =
+      (<GameLoopProvider gameLoop={new GameLoop(this.store)} >
+        <RS />
+      </GameLoopProvider>);
+
     if (this.context.store) {
       // there is already a Provider in the hierarchy
-      return <RS />;
+      return game;
     }
     return (
       <Provider store={this.store} >
-        <RS />
+        {game}
       </Provider >
     );
   }

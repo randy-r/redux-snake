@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import NeonTriangle from 'react-simple-triangle';
 
-import { setDirection, start as startGame, pause as pauseGame, resume as resumeGame } from '../game-loop';
+import { withGameLoop } from './GameLoop';
 import { UP, RIGHT, DOWN, LEFT } from '../directions';
 import Tile from './Tile';
 // import styles from './styles.css';
@@ -79,6 +79,11 @@ class ReduxSnake extends React.Component {
 
   constructor(props) {
     super(props);
+    this.gameLoop = props.gameLoop;
+  }
+
+  componentWillUnmount() {
+    this.gameLoop.stop();
   }
 
   handleKeyDown = (event) => {
@@ -99,7 +104,7 @@ class ReduxSnake extends React.Component {
       default:
         break;
     }
-    setDirection(direction);
+    if (direction) this.gameLoop.setDirection(direction);
   }
 
   buildGrid = (size, onKeyDown) => {
@@ -116,8 +121,8 @@ class ReduxSnake extends React.Component {
 
     return (
       <div
-        onFocus={() => resumeGame()}
-        onBlur={() => pauseGame()}
+        onFocus={() => this.gameLoop.resume()}
+        onBlur={() => this.gameLoop.pause()}
         ref={(el) => { this.gridRef = el; }}
         role="grid" tabIndex="0" onKeyDown={onKeyDown}
       >
@@ -130,10 +135,10 @@ class ReduxSnake extends React.Component {
     return (
       <div style={styles.wrap} >
         {this.buildGrid(gridSize, this.handleKeyDown)}
-        <StartPanel onClick={(/* event */) => { startGame(); this.gridRef.focus(); }} />
+        <StartPanel onClick={(/* event */) => { this.gameLoop.start(); this.gridRef.focus(); }} />
       </div>
     );
   }
 }
 
-export default ReduxSnake;
+export default withGameLoop(ReduxSnake);
