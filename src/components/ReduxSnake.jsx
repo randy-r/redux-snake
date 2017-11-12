@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import NeonTriangle from 'react-simple-triangle';
 
 import { setDirection, start as startGame, pause as pauseGame, resume as resumeGame } from '../game-loop';
 import { UP, RIGHT, DOWN, LEFT } from '../directions';
@@ -40,25 +41,14 @@ const styles = {
   },
   verticalCenter: {
     position: 'relative',
-    top: '32%',
+    top: '38.5%',
   },
   horizontalCenter: {
     margin: '0 auto',
-    width: '10%',
+    width: '20%',
   },
 };
 
-const PlayButton = ({ onClick }) => {
-  const shadowColor = '#00ff00';
-  const textShadow = `
-          0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff,
-          0 0 40px ${shadowColor}, 0 0 70px ${shadowColor}, 0 0 80px ${shadowColor},
-           0 0 100px ${shadowColor}, 0 0 150px ${shadowColor}
-          `;
-  const style = { textShadow, fontSize: '17vw', color: '#fff', cursor: 'pointer' };
-  const unicodeString = String.fromCodePoint(0x25B7); // keeps minification from messing things up
-  return <span style={style} role="button" tabIndex="-1" onClick={onClick}>{unicodeString}</span>;
-};
 
 const StartPanel = connect(
   (state) => {
@@ -75,7 +65,7 @@ const StartPanel = connect(
         <div style={styles.replayPanel}>
           <div style={styles.verticalCenter} >
             <div style={styles.horizontalCenter} >
-              <PlayButton onClick={onClick} />
+              <NeonTriangle glowColor="rgb(0,255,0)" onClick={onClick} />
             </div>
           </div>
         </div >
