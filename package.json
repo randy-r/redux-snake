@@ -1,6 +1,6 @@
 {
   "name": "redux-snake",
-  "version": "0.1.0",
+  "version": "0.9.0",
   "description": "Little Redux-ish usage for creating a snake game.",
   "main": "dist/index.js",
   "scripts": {
